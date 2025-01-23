@@ -1,66 +1,40 @@
-
--- PARAMS
-local player_speed = 100
-
--- PLAYER VARIABLES
-local initial_player_position = {x=400,y=400}
-local player_position = {x=400, y=400}
+-- main.lua
+local Player = require("player")
+local Physics = require("physics")
+local Object =  require("object")
 
 -- GAME VARIABLES
 local level1 = {}
-local pressed_keys = {a=false,w=false,s=false,d=false}
+local player
 
-function newMapObj(x, y, w, h)
-    local position = {x=x,y=y}
-
-    local obj = {}
-
-    obj.draw = function ()
-        love.graphics.rectangle("fill", position.x - (player_position.x - initial_player_position.x), position.y - (player_position.y - initial_player_position.y), w, h)
-    end
-
-    obj.update = function ()
-        position = position + 5
-    end
-
-    return obj
-end
 
 function love.load()
-    table.insert(level1, newMapObj(50,50,20,20))
-    table.insert(level1, newMapObj(200,70, 500, 300))
+    player = Player.new({x = 150, y = 150}, 100)
+
+    table.insert(level1, Object.newRectangle(100, 500, 500, 300))
 end
 
 function love.update(dt)
-    for key, pressed in pairs(pressed_keys) do
-        if key == "a" and pressed then
-            player_position.x = player_position.x - (player_speed * dt)
-        elseif key == "d" and pressed then
-            player_position.x = player_position.x + (player_speed * dt)
-        elseif key == "w" and pressed then
-            player_position.y = player_position.y - (player_speed * dt)
-        elseif key == "s" and pressed then
-            player_position.y = player_position.y + (player_speed * dt)
-        end
+    player:update(dt)
+
+    if Physics.collision({player}, level1) then
+        print("Collision detected!")
     end
+
 end
 
 function love.draw()
-    love.graphics.circle("fill", initial_player_position.x, initial_player_position.y, 20)
+    player:draw()
 
-    for idx, obj in ipairs(level1) do
-        obj.draw()
+    for _, obj in ipairs(level1) do
+        obj.draw(player.position, player.initial_position)
     end
 end
 
 function love.keypressed(key)
-    if pressed_keys[key] ~= nil then
-        pressed_keys[key] = true
-    end
+    player:keypressed(key)
 end
 
 function love.keyreleased(key)
-    if pressed_keys[key] ~= nil then
-        pressed_keys[key] = false
-    end
+    player:keyreleased(key)
 end
