@@ -120,19 +120,6 @@ return {
           }
         },
         {
-          id = 9,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 96,
-          y = 250.5,
-          width = 54.5,
-          height = 0.5,
-          rotation = 0,
-          visible = true,
-          properties = {}
-        },
-        {
           id = 19,
           name = "",
           type = "",

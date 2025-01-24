@@ -16,7 +16,7 @@ end
  
 function Camera:setPosition(x, y)
 	self.x = x - love.graphics.getWidth() / 2 / self.scale
-	self.y = y - love.graphics.getHeight() / 2 / self.scale
+	self.y = y
 	local RS = self.x + love.graphics.getWidth() / 2
  
 	if self.x < 0 then

@@ -42,7 +42,6 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="9" x="96" y="250.5" width="54.5" height="0.5"/>
   <object id="19" x="2" y="340" width="638.5" height="15">
    <properties>
     <property name="collidable" type="bool" value="true"/>

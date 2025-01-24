@@ -24,7 +24,7 @@ function love.update(dt)
 	Player:update(dt)
 	Collectable.updateAll(dt)
 	Spike.updateAll(dt)
-	Camera:setPosition(Player.x, Player.y)
+	Camera:setPosition(Player.x, 0)
 end
 
 function love.draw()
