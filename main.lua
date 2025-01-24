@@ -1,6 +1,9 @@
-local STI = require("sti")
-require("player")
 love.graphics.setDefaultFilter("nearest", "nearest")
+local STI = require("sti")
+local Player = require("player")
+local Camera = require("camera")
+local Collectable = require("collectable")
+local Spike = require("spike")
 
 function love.load()
 	Map = STI("map/1.lua", {"box2d"})
@@ -8,23 +11,30 @@ function love.load()
 	World:setCallbacks(beginContact, endContact)
 	Map:box2d_init(World)
 	Map.layers.solid.visible = false
+	MapWidth = Map.layers.ground.width * 16
 	background = love.graphics.newImage("assets/background-1200x720.png")
 	Player:load()
+	---carregar coletaveis
+	Collectable.new(100, 200)
+	Spike.new(100,100)
 end
 
 function love.update(dt)
 	World:update(dt)
 	Player:update(dt)
+	Collectable.updateAll(dt)
+	Spike.updateAll(dt)
+	Camera:setPosition(Player.x, Player.y)
 end
 
 function love.draw()
 	love.graphics.draw(background)
-	Map:draw(0, 0, 3.5, 3.5)
-	love.graphics.push()
-	love.graphics.scale(3.5,3.5)
+	Map:draw(-Camera.x, -Camera.y, Camera.scale, Camera.scale)
+	Camera:apply()
 	Player:draw()
-
-	love.graphics.pop()
+	Collectable.drawAll()
+	Spike.drawAll()
+	Camera:clear()
 end
 
 function love.keypressed(key)
@@ -34,6 +44,8 @@ function love.keypressed(key)
 end
 
 function beginContact(a, b, collision)
+	if Collectable.beginContact(a, b, collision) then return end
+	if Spike.beginContact(a, b, collision) then return end
 	Player:beginContact(a, b, collision)
 end
 
