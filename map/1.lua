@@ -9,8 +9,8 @@ return {
   height = 23,
   tilewidth = 16,
   tileheight = 16,
-  nextlayerid = 4,
-  nextobjectid = 24,
+  nextlayerid = 6,
+  nextobjectid = 34,
   properties = {},
   tilesets = {
     {
@@ -163,6 +163,101 @@ return {
           properties = {
             ["collidable"] = true
           }
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      draworder = "topdown",
+      id = 5,
+      name = "entity",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      tintcolor = { 220, 13, 220 },
+      properties = {},
+      objects = {
+        {
+          id = 28,
+          name = "Spike",
+          type = "Spike",
+          shape = "rectangle",
+          x = 104,
+          y = 327,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 29,
+          name = "Spike",
+          type = "spike",
+          shape = "rectangle",
+          x = 200,
+          y = 328,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 30,
+          name = "Spike",
+          type = "spike",
+          shape = "rectangle",
+          x = 360,
+          y = 312,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 31,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 417,
+          y = 481,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 32,
+          name = "Fuel",
+          type = "fuel",
+          shape = "rectangle",
+          x = 411,
+          y = 263,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 33,
+          name = "Fuel",
+          type = "fuel",
+          shape = "rectangle",
+          x = 151,
+          y = 326,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {}
         }
       }
     }

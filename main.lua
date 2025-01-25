@@ -13,14 +13,14 @@ function love.load()
 	World:setCallbacks(beginContact, endContact)
 	Map:box2d_init(World)
 	Map.layers.solid.visible = false
+	Map.layers.entity.visible = false
 	MapWidth = Map.layers.ground.width * 16
 	background = love.graphics.newImage("assets/background-1200x720.png")
 	Player:load()
 	---carregar coletaveis
-	Collectable.new(100, 100)
-	Spike.new(100,200)
 	Bubble.new(100, 300, 3)
 	GUI:load()
+	spawnEntities()
 end
 
 function love.update(dt)
@@ -64,8 +64,10 @@ end
 
 function spawnEntities()
 	for i,v in ipairs(Map.layers.entity.objects) do
-		if v.type == "spikes" then
+		if v.type == "spike" then
 			Spike.new(v.x - v.width/2, v.y - v.height/2)
+		elseif v.type == "fuel" then
+			Collectable.new(v.x - v.width/2, v.y - v.height/2)
 		end
 	end
 end

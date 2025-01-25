@@ -13,7 +13,7 @@ function Player:load()
     -- no tutorial o maluco usava aqui uma maxspeed, uma aceleracao e uma friccao, pra fazer o movimento chegar gradualmente a velocidade de andar e parar
     -- setou pra esse valor no tutorial (acho que no nosso jogo n faz sentido guardar a gravidade em player)
     self.grounded = false
-    self.fuel = 800
+    self.fuel = 700
     self.max_fuel = 1000
     self.jump_amount = -500
     self.direction = 'right'
@@ -85,7 +85,7 @@ function Player:collect()
     if self.fuel + 200 <= 1000 then
         self.fuel = self.fuel + 200
     else 
-        self.fuel = 100
+        self.fuel = 1000
     end
 end
 

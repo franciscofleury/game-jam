@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="24">
+<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="34">
  <editorsettings>
   <export target="../1.lua" format="lua"/>
  </editorsettings>
@@ -57,5 +57,13 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup id="5" name="entity" tintcolor="#dc0ddc">
+  <object id="28" name="Spike" type="Spike" x="104" y="327"/>
+  <object id="29" name="Spike" type="spike" x="200" y="328"/>
+  <object id="30" name="Spike" type="spike" x="360" y="312"/>
+  <object id="31" x="417" y="481"/>
+  <object id="32" name="Fuel" type="fuel" x="411" y="263"/>
+  <object id="33" name="Fuel" type="fuel" x="151" y="326"/>
  </objectgroup>
 </map>
