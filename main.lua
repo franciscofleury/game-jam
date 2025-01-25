@@ -8,9 +8,15 @@ local Bubble = require("bubble")
 local Bullet = require("bullet")
 local GUI = require("gui")
 local SmallShooter = require("smallShooter")
+local BigShooter = require("bigShooter")
+local Walker = require("walker")
 
 function love.load()
+	Bullet.loadAssets()
 	SmallShooter.loadAssets()
+	BigShooter.loadAssets()
+	Walker.loadAssets()
+	Bubble.loadAssets()
 	Map = STI("map/1.lua", {"box2d"})
 	World = love.physics.newWorld(0,2000)
 	World:setCallbacks(beginContact, endContact)
@@ -21,8 +27,10 @@ function love.load()
 	background = love.graphics.newImage("assets/background-1200x720.png")
 	Player:load()
 	---carregar coletaveis
-	Bubble.new(140, 300, 3)
-	SmallShooter.new(300, 100, 10, 1)
+	Bubble.new(140, 300, 2)
+	SmallShooter.new(100, 320, 5, 1)
+	BigShooter.new(400, 320, 5, 1)
+	Walker.new(200, 320, 5, 1)
 	GUI:load()
 	spawnEntities()
 end
@@ -35,6 +43,8 @@ function love.update(dt)
 	Bubble.updateAll(dt)
 	Bullet.updateAll(dt)
 	SmallShooter.updateAll(dt)
+	BigShooter.updateAll(dt)
+	Walker.updateAll(dt)
 	Camera:setPosition(Player.x, 0)
 	GUI:update(dt)
 end
@@ -49,6 +59,8 @@ function love.draw()
 	Bubble.drawAll()
 	Bullet.drawAll()
 	SmallShooter.drawAll()
+	BigShooter.drawAll()
+	Walker.drawAll()
 	Camera:clear()
 	GUI:draw()
 end
@@ -57,14 +69,17 @@ function love.keypressed(key)
 	if key == "w" then
 		Player:jump()
 	elseif key == "space" then
-		Bubble.new(Player.x + 10, Player.y, 2)
+		Player:castBubble()
 	elseif key == "r" then
 		Player:shoot()
+	elseif key == "c" then
+		Player:useShield()
 	end
 end
 
 function beginContact(a, b, collision)
 	if SmallShooter.beginContact(a, b, collision) then return end
+	if BigShooter.beginContact(a, b, collision) then return end
 	if Collectable.beginContact(a, b, collision) then return end
 	if Spike.beginContact(a, b, collision) then return end
 	if Bubble.beginContact(a, b, collision) then return end
