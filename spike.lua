@@ -6,6 +6,7 @@ Spike.height = Spike.img:getHeight()
 
 local ActiveSpikes = {}
 local Player = require("player")
+local Bubble = require("bubble")
 
 function Spike.new(x,y)
    local instance = setmetatable({}, Spike)

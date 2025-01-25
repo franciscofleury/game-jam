@@ -1,5 +1,3 @@
-require("globals")
-
 local Player = {}
 
 function Player:load()
@@ -11,9 +9,12 @@ function Player:load()
     self.height = 24
     self.x_vel = 0
     self.y_vel = 100
+    self.gravity = 1500
     -- no tutorial o maluco usava aqui uma maxspeed, uma aceleracao e uma friccao, pra fazer o movimento chegar gradualmente a velocidade de andar e parar
     -- setou pra esse valor no tutorial (acho que no nosso jogo n faz sentido guardar a gravidade em player)
     self.grounded = false
+    self.fuel = 800
+    self.max_fuel = 1000
     self.jump_amount = -500
     self.direction = 'right'
     self.state = 'idle'
@@ -33,6 +34,7 @@ function Player:load()
     self.physics.body:setFixedRotation(true)
     self.physics.shape = love.physics.newRectangleShape(self.width, self.height)
     self.physics.fixture = love.physics.newFixture(self.physics.body, self.physics.shape)
+    self.physics.body:setGravityScale(0)
 end
 
 function Player:loadAssests()
@@ -77,6 +79,14 @@ end
 function Player:tintRed()
     self.color.green = 0
     self.color.blue = 0
+end
+
+function Player:collect()
+    if self.fuel + 200 <= 1000 then
+        self.fuel = self.fuel + 200
+    else 
+        self.fuel = 100
+    end
 end
 
 function Player:unTint(dt)
@@ -135,7 +145,7 @@ end
 
 function Player:applyGravity(dt)
     if self.grounded == false then
-        self.y_vel = self.y_vel + GRAVITY * dt
+        self.y_vel = self.y_vel + self.gravity * dt
     end
 end
 

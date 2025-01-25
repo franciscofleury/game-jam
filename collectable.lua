@@ -9,16 +9,19 @@ function Collectable.new(x, y)
     local instance = setmetatable({}, Collectable)
     instance.x = x
     instance.y = y
-    instance.img = love.graphics.newImage("assets/spike.png")
-    instance.width = instance.img:getWidth()
-    instance.height = instance.img:getHeight()
-    -- instance.animation = {timer = 0, ratio = 0.1}
-    -- local random_num = math.random(1,6)
-    -- instance.animation.main_anim = {total = 6, current = random_num, img = {}}
-    -- for i=1, self.animation.main_anim.total do
-    --     self.animation.main_anim.img[i] = love.graphics.newImage("assets/collectable/main_anim" .. i .. ".png")
-    -- end
+
+    instance.animation = {timer = 0, ratio = 0.1}
+    local random_num = math.random(1,10)
+    instance.animation.main_anim = {total = 10, current = random_num, img = {}}
+    for i=1, instance.animation.main_anim.total do
+        instance.animation.main_anim.img[i] = love.graphics.newImage("assets/fuel/fuel" .. i .. ".png")
+    end
+    instance.animation.draw = instance.animation.main_anim.img[instance.animation.main_anim.current]
     instance.to_be_removed = false
+    instance.width = instance.animation.main_anim.img[1]:getWidth()
+    instance.height = instance.animation.main_anim.img[1]:getHeight()
+
+
     instance.physics = {}
     instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "static")
     instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
@@ -28,7 +31,7 @@ function Collectable.new(x, y)
 end
 
 function Collectable:draw()
-    love.graphics.draw(self.img, self.x, self.y, 0, 1, 1, self.width / 2, self.height / 2)
+    love.graphics.draw(self.animation.draw, self.x, self.y, 0, 1, 1, self.width/2, self.height/2)
 end
 
 function Collectable.drawAll()
@@ -39,9 +42,10 @@ end
 
 function Collectable:update(dt)
     self:checkRemove()
+    self:animate(dt)
 end
 
-function Collectable:animate()
+function Collectable:animate(dt)
     self.animation.timer = self.animation.timer + dt
     if self.animation.timer >= self.animation.ratio then
         self.animation.timer = 0
@@ -51,7 +55,16 @@ end
 
 function Collectable:checkRemove()
     if self.to_be_removed then
-        table.remove(ActiveCollectables, self)
+        self:remove()
+    end
+end
+
+function Collectable:remove()
+    for i, instance in ipairs(ActiveCollectables) do
+        if instance == self then
+            self.physics.body:destroy()
+            table.remove(ActiveCollectables, i)
+        end
     end
 end
 
