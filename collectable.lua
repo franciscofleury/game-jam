@@ -21,7 +21,6 @@ function Collectable.new(x, y)
     instance.width = instance.animation.main_anim.img[1]:getWidth()
     instance.height = instance.animation.main_anim.img[1]:getHeight()
 
-
     instance.physics = {}
     instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "static")
     instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)

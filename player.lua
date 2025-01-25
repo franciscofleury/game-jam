@@ -1,3 +1,5 @@
+local Bullet = require("bullet")
+
 local Player = {}
 
 function Player:load()
@@ -18,7 +20,7 @@ function Player:load()
     self.jump_amount = -500
     self.direction = 'right'
     self.state = 'idle'
-    self.health = {current = 3, max = 3}
+    self.health = {current = 1, max = 1}
     self.alive = true
     self.color = {
         red = 1,
@@ -94,6 +96,10 @@ function Player:unTint(dt)
     self.color.green = math.min(self.color.green + self.color.speed * dt, 1)
     self.color.blue = math.min(self.color.blue + self.color.speed * dt, 1)
  end
+
+function Player:shoot()
+    Bullet.new(self.x + 40, self.y)
+end
 
 function Player:update(dt)
     self:unTint(dt)

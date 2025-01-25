@@ -24,6 +24,7 @@ function Bubble.new(x,y, bubbleSize)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(1)
    instance.physics.fixture:setFriction(0.1)
+   instance.physics.fixture:setRestitution(0.8)
    table.insert(ActiveBubbles, instance)
 end
 
@@ -60,21 +61,18 @@ function Bubble.beginContact(a, b, collision)
     for i, instance in ipairs(ActiveBubbles) do
         if a == instance.physics.fixture or b == instance.physics.fixture then
             if a == Player.physics.fixture or b == Player.physics.fixture then
-                local playerX, playerY = Player.physics.body:getPosition()
-                local bubbleX, bubbleY = instance.physics.body:getPosition()
-                local forceX = bubbleX - playerX
-                local forceY = bubbleY - playerY
-
-				local magnitude = math.sqrt(forceX * forceX + forceY * forceY)
-                forceX = forceX / magnitude
-                forceY = forceY / magnitude
-
-                local forceMagnitude = 500 
-                instance.physics.body:applyForce(forceX * forceMagnitude, forceY * forceMagnitude)
-
-                return true
+                              
+               local playerX, playerY = Player.physics.body:getPosition()
+               local bubbleX, bubbleY = instance.physics.body:getPosition()
+               local forceX = bubbleX - playerX
+               local forceY = bubbleY - playerY
+               
+               if forceX > 0 then instance.x_vel = 10 else instance.x_vel = -10 end
+               if forceY > 0 then Player:land() end
+               
+               return true
             end
-        end
+         end  
     end
 end
 
