@@ -3,6 +3,7 @@ BigShooter.__index = BigShooter
 local Player = require("player")
 local Bullet = require("bullet")
 local Bubble = require("bubble")
+local BigShot = require("bigShot")
 
 local ActiveBigShooters = {}
 
@@ -104,7 +105,7 @@ function BigShooter:setNewFrame()
    else
       if self.state == "shoot" then
          self.cooldown_timer = 0
-         --Bullet.new(x, y, side)
+         BigShot.new(self.x, self.y, "right")
          self.state = "still"
       elseif self.state == "die" then
          self:remove()

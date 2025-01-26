@@ -14,14 +14,17 @@ local SmallShot = require("smallShot")
 local BigShot = require("bigShot")
 
 function Map:load()
-    self.current_level = 1
+    self.progress = self:loadSave()
 	World = love.physics.newWorld(0,2000)
 	World:setCallbacks(beginContact, endContact)
-    self:init()
+    self:loadSave()
+    self:init(1, 1)
 end
 
-function Map:init()
-    self.level = STI("map/"..self.current_level..".lua", {"box2d"})
+function Map:init(current_level, current_sub_level)
+    self.current_level = current_level
+    self.current_sub_level = current_sub_level
+    self.level = STI("map/"..self.current_level.."-"..self.current_sub_level..".lua", {"box2d"})
 	self.level:box2d_init(World)
     self.solidLayer = self.level.layers.solid
     self.groundLayer = self.level.layers.ground
@@ -34,9 +37,17 @@ end
 
 function Map:next()
     self:clean()
-	self.current_level = self.current_level + 1
-    self:init()
+	self.current_sub_level = self.current_sub_level + 1
+    if self.max_level < self.current__sub_level then
+        self:endLevel()
+        return
+    end
+    self:init(current_level, current__sub_level)
     Player:resetPosition()
+end
+
+function Map:endLevel()
+    self:createSave(self.current_level)
 end
 
 function Map:clean()
@@ -51,12 +62,36 @@ function Map:clean()
     SmallShot.removeAll()
     Spike.removeAll()
     Walker.removeAll()
-    -- BigShot.removeAll()
+    BigShot.removeAll()
 end
 
 function Map:update()
     if Player.x > MapWidth - 16 then
         self:next()
+    end
+end
+
+function Map:createSave(current_level)
+    -- print("create saveeee")
+    -- love.filesystem.write("save.lua", "function data() return " .. self.max_level .. " end")
+    -- return self.max_level
+    local file = io.open("ex.txt", "w")
+    if file then
+        file:write(current_level)
+        file:close()
+    else
+        print("Erro ao criar o arquivo.")
+    end
+end
+
+function Map:loadSave()
+    local file = io.open("ex.txt", "r")
+    if file then
+        local progress = file:read(1)
+        file:close()
+        return tonumber(progress)
+    else
+        return 0
     end
 end
 
@@ -71,9 +106,9 @@ function Map:spawnEntities()
 		elseif v.type == "big_shooter" then
 			BigShooter.new(v.x - v.width/2, v.y - v.height/2, 5, 1)
 		elseif v.type == "walker" then
-			Walker.new(v.x - v.width/2, v.y - v.height/2, 30)
+			Walker.new(v.x - v.width/2, v.y - v.height/2, 30, self.level)
 		elseif v.type == "flyer" then
-			Flyer.new(v.x - v.width/2, v.y - v.height/2, v.properties.x_vel, v.properties.y_vel)
+			Flyer.new(v.x - v.width/2, v.y - v.height/2, v.properties.x_vel, v.properties.y_vel, self.level)
 		-- elseif v.type == "jumper" then
 		-- 	Jumper.new(v.x - v.width/2, v.y - v.height/2, 6, -30)
 		end

@@ -15,7 +15,7 @@ function Flyer.removeAll()
    ActiveFlyers = {}
 end
 
-function Flyer.new(x,y, x_speed, y_speed)
+function Flyer.new(x,y, x_speed, y_speed, map)
    local instance = setmetatable({}, Flyer)
    instance.x = x
    instance.y = y
@@ -47,6 +47,8 @@ function Flyer.new(x,y, x_speed, y_speed)
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
+
+   instance.map = map
    table.insert(ActiveFlyers, instance)
 end
 
@@ -63,7 +65,6 @@ function Flyer.loadAssets()
 
    Flyer.width = Flyer.flyAnim[1]:getWidth()
    Flyer.height = Flyer.flyAnim[1]:getHeight()
-   Flyer.map = STI("map/1.lua", {"box2d"})
 end
 
 function Flyer:update(dt)

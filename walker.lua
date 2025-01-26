@@ -15,7 +15,7 @@ function Walker.removeAll()
    ActiveWalkers = {}
 end
 
-function Walker.new(x,y, x_speed)
+function Walker.new(x,y, x_speed, map)
    local instance = setmetatable({}, Walker)
    instance.x = x
    instance.y = y
@@ -41,6 +41,9 @@ function Walker.new(x,y, x_speed)
    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(25)
+
+   instance.map = map
+
    table.insert(ActiveWalkers, instance)
 end
 
@@ -57,7 +60,6 @@ function Walker.loadAssets()
 
    Walker.width = Walker.walkAnim[1]:getWidth()
    Walker.height = Walker.walkAnim[1]:getHeight()
-   Walker.map = STI("map/1.lua", {"box2d"})
 end
 
 function Walker:update(dt)

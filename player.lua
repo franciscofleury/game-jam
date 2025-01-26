@@ -1,7 +1,5 @@
 local Bullet = require("bullet")
 local Bubble = require("bubble")
-local SmallShot = require("smallShot")
-local BigShot = require("bigShot")
 -- local Map = require("map")
 
 local Player = {}
@@ -26,8 +24,9 @@ function Player:load()
     self.state = 'idle' -- idle, walk, air
     self.looking = 'side' --side, up, down
     self.shooting = 'not_shoot' -- tambem varia as animações criando um total de 18 possibilidades
-    self.shieldState = 'idle'
-    self.shieldLife = 100
+    self.shieldState = 'create'
+    self.shieldLife = 10
+    self.cooldown = 1
     self.imunity = false
     self.imunityTime = 2
     self.health = {current = 1, max = 2}
@@ -36,11 +35,9 @@ function Player:load()
         red = 1,
         green = 1,
         blue = 1,
+        opacity = 1,
         speed = 3,
     }
-
-    self:loadAssets()
-
     self.physics = {}
     self.physics.body = love.physics.newBody(World, self.x, self.y, "dynamic")
     self.physics.body:setFixedRotation(true)
@@ -66,7 +63,7 @@ function Player:loadAssets()
     self.animation.width = self.animation.draw:getWidth()
     self.animation.height = self.animation.draw:getHeight()
 
-    self.animationShield = {timer = 0, rate = 3}
+    self.animationShield = {timer = 0, rate = 0.05}
     self.animationShield.create = {total = 9, current = 1, img = {}}
     for i=1, self.animationShield.create.total do
         self.animationShield.create.img[i] = love.graphics.newImage("assets/shield/generating/generating" .. i .. ".png")
@@ -105,8 +102,9 @@ function Player:unshield()
 end
 
 function Player:useShield()
-    if self.fuel - 100 >= 0 then
+    if self.fuel - 100 >= 0 and self.cooldown <= 0 then
         if self.health.current == 1 then
+            self.cooldown = 1
             self.fuel = self.fuel - 100
             self.health.current = 2
             self.shieldState = "create"
@@ -114,6 +112,7 @@ function Player:useShield()
         end
         return true
     else
+        self:tintWhite()
         return false
     end
 end
@@ -124,7 +123,7 @@ end
 
 function Player:respawn()
     if not self.alive then
-       self.resetPosition()
+       self:resetPosition()
        self.health.current = 1
        self.alive = true
     end
@@ -139,6 +138,13 @@ function Player:tintRed()
     self.color.blue = 0
 end
 
+function Player:tintWhite()
+    self.color.green = 1
+    self.color.blue = 1
+    self.color.red = 1
+    self.color.opacity = 0.2
+end
+
 function Player:collect()
     if self.fuel + 200 <= 1000 then
         self.fuel = self.fuel + 200
@@ -151,12 +157,15 @@ function Player:unTint(dt)
     self.color.red = math.min(self.color.red + self.color.speed * dt, 1)
     self.color.green = math.min(self.color.green + self.color.speed * dt, 1)
     self.color.blue = math.min(self.color.blue + self.color.speed * dt, 1)
+    self.color.opacity = math.min(self.color.opacity + self.color.speed * dt, 1)
  end
 
 function Player:shoot()
     if self.fuel - 50 >= 0 then
         Bullet.new(self.x, self.y, self.direction)
         self.fuel = self.fuel - 50 
+    else
+        self:tintWhite()
     end
 end
 
@@ -170,12 +179,21 @@ function Player:update(dt)
     self:syncPhysics()
     self:move(dt)
     self:applyGravity(dt)
+    self.cooldown = self.cooldown - dt
+    self:updateShield(dt)
+    self:updateImunity(dt)
+end
+
+function Player:updateShield(dt)
     if self.health.current == 2 then
         self.shieldLife = self.shieldLife - dt
         if self.shieldLife <= 0 then
             self:unshield()
         end
     end
+end
+
+function Player:updateImunity(dt)
     if self.imunity == true then 
         self.imunityTime = self.imunityTime - dt
         if self.imunityTime <= 0 then
@@ -307,29 +325,6 @@ function Player:beginContact(a, b, collision)
         end
     end
 
-    for i, small_shot in ipairs(SmallShot.ActiveSmallShots) do
-        if a == small_shot.physics.fixture or b == small_shot.physics.fixture then
-           for i, instance in ipairs(ActiveSmallShooters) do
-              if a == instance.physics.fixture or b == instance.physics.fixture then
-                 small_shot:destroy()
-                 instance:takeDamage(1)
-                 break
-              end
-           end
-        end
-     end
-
-    --  for i, big_shot in ipairs(BigShot.ActiveBigShots) do
-    --     if a == big_shot.physics.fixture or b == big_shot.physics.fixture then
-    --        for i, instance in ipairs(ActiveBigShooters) do
-    --           if a == instance.physics.fixture or b == instance.physics.fixture then
-    --              big_shot:destroy()
-    --              instance:takeDamage(1)
-    --              break
-    --           end
-    --        end
-    --     end
-    --  end
 end
 
 function Player:land(collision)
@@ -354,11 +349,24 @@ function Player:jump()
     end
 end
 
-function Player:castBubble()
-    if self.fuel - 100 >= 0 then -- talvez mudar pra variar dependendo do tamanho da bolha
-        self.fuel = self.fuel - 100
-        -- fazer um jeito de mudar o tamanho da bolha
-        Bubble.new(self.x, self.y, 2, self.direction)
+function Player:castBubble(size)
+    local fuelCost
+    if size == 1 then
+        fuelCost = 10
+    elseif size == 2 then
+        fuelCost = 60
+    elseif size == 3 then
+        fuelCost = 100
+    else
+        return
+    end
+
+    if self.fuel - fuelCost >= 0 and self.cooldown <= 0 then
+        self.cooldown = 1
+        self.fuel = self.fuel - fuelCost
+        Bubble.new(self.x, self.y, size, self.direction)
+    else
+        self:tintWhite()
     end
 end
 
@@ -367,7 +375,7 @@ function Player:draw()
     if self.direction == 'left' then
         x_scale = -1
     end
-    love.graphics.setColor(self.color.red, self.color.green, self.color.blue)
+    love.graphics.setColor(self.color.red, self.color.green, self.color.blue, self.color.opacity)
     love.graphics.draw(self.animation.draw, self.x, self.y, 0, x_scale, 1, self.animation.width/2, self.animation.height/2)
     if self.health.current == 2 then 
         love.graphics.draw(self.animationShield.draw, self.x + 1, self.y, 0, 1, 1, self.animationShield.width/2, self.animationShield.height/2)

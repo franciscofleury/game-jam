@@ -98,6 +98,7 @@ end
 function Bubble:destroy()
    for i, bubble in ipairs(ActiveBubbles) do
       if bubble == self and bubble.state ~= "pop" then
+         self.animation.rate = 0.05
          self.state = "pop"
          self.physics.body:destroy()
     	   break

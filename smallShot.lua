@@ -1,3 +1,5 @@
+local Player = require("player")
+
 local SmallShot = {}
 SmallShot.__index = SmallShot
 
@@ -122,6 +124,9 @@ end
 function SmallShot.beginContact(a, b, collision)
    for i, instance in ipairs(ActiveSmallShots) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
+         if a == Player.physics.fixture or b == Player.physics.fixture then
+            Player:takeDamage(1)
+         end
          instance:destroy()
          return true
       end

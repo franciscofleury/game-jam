@@ -3,6 +3,7 @@ SmallShooter.__index = SmallShooter
 local Player = require("player")
 local Bullet = require("bullet")
 local Bubble = require("bubble")
+local SmallShot = require("smallShot")
 
 local ActiveSmallShooters = {}
 
@@ -103,7 +104,7 @@ function SmallShooter:setNewFrame()
    else
       if self.state == "shoot" then
          self.cooldown_timer = 0
-         --Bullet.new(x, y, side)
+         SmallShot.new(self.x, self.y, "right")
          self.state = "still"
       elseif self.state == "die" then
          self:remove()
@@ -147,7 +148,7 @@ end
 
 function SmallShooter:die()
    self.state = "die"
-   self.animation.rate = 1.05
+   self.animation.rate = 0.05
    self.physics.body:destroy()
 end
 

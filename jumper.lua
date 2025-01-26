@@ -14,7 +14,7 @@ function Jumper.removeAll()
    ActiveJumpers = {}
 end
 
-function Jumper.new(x,y, cooldown, x_speed)
+function Jumper.new(x,y, cooldown, x_speed, map)
    local instance = setmetatable({}, Jumper)
    instance.x = x
    instance.y = y
@@ -46,6 +46,8 @@ function Jumper.new(x,y, cooldown, x_speed)
    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(25)
+
+   instance.map = map
    table.insert(ActiveJumpers, instance)
 end
 
@@ -72,7 +74,6 @@ function Jumper.loadAssets()
 
    Jumper.width = Jumper.walkAnim[1]:getWidth()
    Jumper.height = Jumper.walkAnim[1]:getHeight()
-   Jumper.map = STI("map/1.lua", {"box2d"})
 end
 
 function Jumper:update(dt)
