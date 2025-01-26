@@ -21,7 +21,7 @@ function Walker.new(x,y, x_speed, map)
    instance.y = y
 
    instance.state = "walk"
-   instance.hp = 2
+   instance.hp = 1
    if x_speed < 0 then
       instance.side = -1
    else
@@ -71,7 +71,7 @@ end
 
 function Walker:changeSide()
    --confere se o walker bate em algum dos sensores do tiled
-   for _, sensor in ipairs(Walker.map.layers.sensors.objects) do
+   for _, sensor in ipairs(self.map.layers.sensors.objects) do
       if sensor.type == "walker_sensor" then
          if self.x + self.width > sensor.x and self.x < sensor.x + sensor.width then
             if self.y + self.height > sensor.y and self.y < sensor.y + sensor.height then

@@ -15,7 +15,7 @@ local Jumper = require("jumper") -- awww
 local Map = require("map")
 local SmallShot = require("smallShot") -- awww
 local BigShot = require("bigShot") -- awww
-local Button, Screens = require("button")
+local Button = require("button")
 
 function love.load()
 	Bullet.loadAssets()
@@ -30,16 +30,15 @@ function love.load()
 	Button.load()
 	Player:loadAssets()
 	Map:load()
+	start_background = love.graphics.newImage("assets/buttons/all.png")
 	background = love.graphics.newImage("assets/background-1200x720.png")
+	levels_background = love.graphics.newImage("assets/buttons/levels_background.png")
 	Player:load()
-	---carregar coletaveis
 	GUI:load()
-	-- spawnEntities() -- awww
 end
 
 function love.update(dt)
-	if Screens.current == "game" then
-		updateGame(dt)
+	if Button.screens.current == "game" then
 		World:update(dt)
 		Player:update(dt)
 		Collectable.updateAll(dt)
@@ -53,15 +52,19 @@ function love.update(dt)
 		Flyer.updateAll(dt)
 		Jumper.updateAll(dt)
 		Bubble.updateAll(dt)
-		Camera:setPosition(Player.x, 0)
+		Camera:setPosition(Player.x, Player.y/2 + 30)
 		GUI:update(dt)
 		Map:update(dt)
-		print(Map.progress)
 	end
+	Button.update(dt)
 end
 
 function love.draw()
-	if Screens.current == "game" then
+	if Button.screens.current == "start" then
+		love.graphics.draw(start_background)
+	elseif Button.screens.current == "levels" then
+		love.graphics.draw(levels_background)
+	elseif Button.screens.current == "game" then
 		love.graphics.draw(background)
 		Map.level:draw(-Camera.x, -Camera.y, Camera.scale, Camera.scale)
 		Camera:apply()
@@ -84,7 +87,7 @@ function love.draw()
 end
 
 function love.keypressed(key)
-	if key == "space" then
+	if key == "w" then
 		Player:jump()
 	elseif key == "1" then
 		Player:castBubble(1)
@@ -92,9 +95,9 @@ function love.keypressed(key)
 		Player:castBubble(2)
 	elseif key == "3" then
 		Player:castBubble(3)	
-	elseif key == "r" then
+	elseif key == "k" then
 		Player:shoot()
-	elseif key == "c" then
+	elseif key == "l" then
 		Player:useShield()
 	end
 end
@@ -117,8 +120,3 @@ end
 function endContact(a, b, collision)
 	Player:endContact(a, b, collision)
 end
-
-function changeScreen()
-
-end
-

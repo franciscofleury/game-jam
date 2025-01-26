@@ -148,7 +148,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="6" name="sensors" visible="0">
+ <objectgroup id="6" name="sensors">
   <object id="78" name="Walker Sensor" type="walker_sensor" x="206.375" y="248.443" width="1.5625" height="2.4375"/>
   <object id="80" name="Walker Sensor" type="walker_sensor" x="304.125" y="249.466" width="1.125" height="2.1875"/>
   <object id="85" name="Flyer Sensor" type="flyer_sensor" x="468.667" y="12.6667" width="3.33333" height="5.33333"/>

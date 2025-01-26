@@ -5,5 +5,5 @@ function love.conf(t)
 	t.window.height = 720
 	t.window.vsync = 0
 	t.window.resizable = false
-	--t.window.icon = "assets/bubble.png"
+	t.window.icon = "assets/bubble/big/flicking/flicking5.png"
 end

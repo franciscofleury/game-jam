@@ -76,7 +76,7 @@ end
 
 function Flyer:changeSide()
    --confere se o Flyer bate em algum dos sensores do tiled
-   for _, sensor in ipairs(Flyer.map.layers.sensors.objects) do
+   for _, sensor in ipairs(self.map.layers.sensors.objects) do
       if sensor.type == "flyer_sensor" then
          if self.x + self.width > sensor.x and self.x < sensor.x + sensor.width then
             if self.y + self.height > sensor.y and self.y < sensor.y + sensor.height then

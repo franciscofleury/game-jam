@@ -31,18 +31,18 @@ function Map:init(current_level, current_sub_level)
     self.entityLayer = self.level.layers.entity
 	self.solidLayer.visible = false
 	self.entityLayer.visible = false
-	MapWidth = self.groundLayer.width * 16
+	MapWidth = self.groundLayer.width * 20
     self:spawnEntities()
 end
 
 function Map:next()
     self:clean()
 	self.current_sub_level = self.current_sub_level + 1
-    if self.max_level < self.current__sub_level then
+    if 3 < self.current_sub_level then
         self:endLevel()
         return
     end
-    self:init(current_level, current__sub_level)
+    self:init(self.current_level, self.current_sub_level)
     Player:resetPosition()
 end
 
@@ -66,16 +66,13 @@ function Map:clean()
 end
 
 function Map:update()
-    if Player.x > MapWidth - 16 then
+    if Player.x > 110*16 - 16 then
         self:next()
     end
 end
 
 function Map:createSave(current_level)
-    -- print("create saveeee")
-    -- love.filesystem.write("save.lua", "function data() return " .. self.max_level .. " end")
-    -- return self.max_level
-    local file = io.open("ex.txt", "w")
+    local file = io.open("save.txt", "w")
     if file then
         file:write(current_level)
         file:close()
@@ -85,7 +82,7 @@ function Map:createSave(current_level)
 end
 
 function Map:loadSave()
-    local file = io.open("ex.txt", "r")
+    local file = io.open("save.txt", "r")
     if file then
         local progress = file:read(1)
         file:close()

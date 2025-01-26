@@ -161,7 +161,8 @@ function Player:unTint(dt)
  end
 
 function Player:shoot()
-    if self.fuel - 50 >= 0 then
+    if self.fuel - 50 >= 0 and self.cooldown <= 0 then
+        self.cooldown = 1
         Bullet.new(self.x, self.y, self.direction)
         self.fuel = self.fuel - 50 
     else

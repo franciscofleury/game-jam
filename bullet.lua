@@ -11,20 +11,20 @@ function Bullet.new(x, y, direction)
 
    if direction == "right" then
       instance.x = x + 21
-      instance.x_vel = 100
+      instance.x_vel = 125
       instance.y_vel = 0
    elseif direction == "left" then
       instance.x = x - 15
-      instance.x_vel = -100
+      instance.x_vel = -125
       instance.y_vel = 0
    elseif direction == "up" then
       instance.y = y - 10
       instance.x_vel = 0
-      instance.y_vel = -100
+      instance.y_vel = -125
    elseif direction == "down" then
       instance.y = y + 40
       instance.x_vel = 0
-      instance.y_vel = 100
+      instance.y_vel = 125
    end
 
    instance.physics = {}

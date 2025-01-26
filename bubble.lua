@@ -37,7 +37,7 @@ function Bubble.new(x,y, bubbleSize, direction)
 
    instance.physics = {}
    instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
-   instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
+   instance.physics.shape = love.physics.newRectangleShape(instance.width*0.95, instance.height*0.95)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(1)
    instance.physics.fixture:setFriction(0.1)
