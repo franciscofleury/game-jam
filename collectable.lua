@@ -39,6 +39,14 @@ function Collectable.drawAll()
     end
 end
 
+function Collectable.removeAll()
+    for i,v in ipairs(ActiveCollectables) do
+       v.physics.body:destroy()
+    end
+ 
+    ActiveCollectables = {}
+ end
+
 function Collectable:update(dt)
     self:checkRemove()
     self:animate(dt)

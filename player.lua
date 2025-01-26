@@ -1,5 +1,8 @@
 local Bullet = require("bullet")
 local Bubble = require("bubble")
+local SmallShot = require("smallShot")
+local BigShot = require("bigShot")
+-- local Map = require("map")
 
 local Player = {}
 
@@ -20,7 +23,9 @@ function Player:load()
     self.max_fuel = 1000
     self.jump_amount = -500
     self.direction = 'right'
-    self.state = 'idle'
+    self.state = 'idle' -- idle, walk, air
+    self.looking = 'side' --side, up, down
+    self.shooting = 'not_shoot' -- tambem varia as animações criando um total de 18 possibilidades
     self.shieldState = 'idle'
     self.shieldLife = 100
     self.imunity = false
@@ -47,6 +52,7 @@ end
 function Player:loadAssets()
     self.animation = {timer = 0, rate = 0.1}
     
+    --todas as animações estarão na table animation seguindo o padrão animation.state.looking.shooting
     self.animation.walk = {total = 6, current = 1, img = {}}
     for i=1, self.animation.walk.total do
         self.animation.walk.img[i] = love.graphics.newImage("assets/bolho/walk/normal/walk" .. i .. ".png")
@@ -118,10 +124,14 @@ end
 
 function Player:respawn()
     if not self.alive then
-       self.physics.body:setPosition(self.startX, self.startY)
+       self.resetPosition()
        self.health.current = 1
        self.alive = true
     end
+end
+
+function Player:resetPosition()
+    self.physics.body:setPosition(self.startX, self.startY)
 end
 
 function Player:tintRed()
@@ -144,7 +154,10 @@ function Player:unTint(dt)
  end
 
 function Player:shoot()
-    Bullet.new(self.x, self.y, self.direction)
+    if self.fuel - 50 >= 0 then
+        Bullet.new(self.x, self.y, self.direction)
+        self.fuel = self.fuel - 50 
+    end
 end
 
 function Player:update(dt)
@@ -194,8 +207,6 @@ end
 function Player:setNewFrameShield()
     local anim = self.animationShield[self.shieldState]
     self.animationShield.draw = anim.img[anim.current]
-    -- print(self.shieldState)
-    -- print(anim.current)
     if anim.current < anim.total then
         anim.current = anim.current + 1
     else
@@ -295,6 +306,30 @@ function Player:beginContact(a, b, collision)
             end
         end
     end
+
+    for i, small_shot in ipairs(SmallShot.ActiveSmallShots) do
+        if a == small_shot.physics.fixture or b == small_shot.physics.fixture then
+           for i, instance in ipairs(ActiveSmallShooters) do
+              if a == instance.physics.fixture or b == instance.physics.fixture then
+                 small_shot:destroy()
+                 instance:takeDamage(1)
+                 break
+              end
+           end
+        end
+     end
+
+    --  for i, big_shot in ipairs(BigShot.ActiveBigShots) do
+    --     if a == big_shot.physics.fixture or b == big_shot.physics.fixture then
+    --        for i, instance in ipairs(ActiveBigShooters) do
+    --           if a == instance.physics.fixture or b == instance.physics.fixture then
+    --              big_shot:destroy()
+    --              instance:takeDamage(1)
+    --              break
+    --           end
+    --        end
+    --     end
+    --  end
 end
 
 function Player:land(collision)
@@ -320,7 +355,11 @@ function Player:jump()
 end
 
 function Player:castBubble()
-    Bubble.new(self.x, self.y, 2)
+    if self.fuel - 100 >= 0 then -- talvez mudar pra variar dependendo do tamanho da bolha
+        self.fuel = self.fuel - 100
+        -- fazer um jeito de mudar o tamanho da bolha
+        Bubble.new(self.x, self.y, 2, self.direction)
+    end
 end
 
 function Player:draw()

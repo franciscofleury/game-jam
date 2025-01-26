@@ -1,10 +1,10 @@
-local Bullet = {}
-Bullet.__index = Bullet
+local SmallShot = {}
+SmallShot.__index = SmallShot
 
-local ActiveBullets = {}
+local ActiveSmallShots = {}
 
-function Bullet.new(x, y, direction)
-   local instance = setmetatable({}, Bullet)
+function SmallShot.new(x, y, direction)
+   local instance = setmetatable({}, SmallShot)
    instance.x = x
    instance.y = y
    instance.life = 5
@@ -35,33 +35,33 @@ function Bullet.new(x, y, direction)
    instance.physics.fixture:setRestitution(0.8)
    instance.physics.body:setGravityScale(0)
 
-   table.insert(ActiveBullets, instance)
+   table.insert(ActiveSmallShots, instance)
 end
 
-Bullet.ActiveBullets = ActiveBullets
+SmallShot.ActiveSmallShots = ActiveSmallShots
 
-function Bullet:loadAssets()
-   Bullet.animation = {timer = 0, rate = 0.3}
+function SmallShot:loadAssets()
+   SmallShot.animation = {timer = 0, rate = 0.3}
    
-   Bullet.animation.shoot = {total = 4, current = 1, img = {}}
-   for i=1, Bullet.animation.shoot.total do
-      Bullet.animation.shoot.img[i] = love.graphics.newImage("assets/bolho/projectile/projectile" .. i .. ".png")
+   SmallShot.animation.shoot = {total = 3, current = 1, img = {}}
+   for i=1, SmallShot.animation.shoot.total do
+      SmallShot.animation.shoot.img[i] = love.graphics.newImage("assets/enemies/small_shooter/projectile/projectile" .. i .. ".png")
    end
    
-   Bullet.animation.draw = Bullet.animation.shoot.img[1]
-   Bullet.width = Bullet.animation.draw:getWidth()
-   Bullet.height = Bullet.animation.draw:getHeight()
+   SmallShot.animation.draw = SmallShot.animation.shoot.img[1]
+   SmallShot.width = SmallShot.animation.draw:getWidth()
+   SmallShot.height = SmallShot.animation.draw:getHeight()
 end
 
-function Bullet.removeAll()
-   for i,v in ipairs(ActiveBullets) do
+function SmallShot.removeAll()
+   for i,v in ipairs(ActiveSmallShots) do
       v.physics.body:destroy()
    end
 
-   ActiveBullets = {}
+   ActiveSmallShots = {}
 end
 
-function Bullet:animate(dt)
+function SmallShot:animate(dt)
    self.animation.timer = self.animation.timer + dt
    if self.animation.timer > self.animation.rate then
       self.animation.timer = 0
@@ -69,7 +69,7 @@ function Bullet:animate(dt)
    end
 end
 
-function Bullet:setNewFrame()
+function SmallShot:setNewFrame()
    local anim = self.animation.shoot
    if anim.current < anim.total then
       anim.current = anim.current + 1
@@ -79,7 +79,7 @@ function Bullet:setNewFrame()
    self.animation.draw = anim.img[anim.current]
 end
 
-function Bullet:update(dt)
+function SmallShot:update(dt)
    self:animate(dt)
    self:syncPhysics()
    self.physics.body:setLinearVelocity(self.x_vel, self.y_vel)
@@ -89,38 +89,38 @@ function Bullet:update(dt)
    end
 end
 
-function Bullet:syncPhysics()
+function SmallShot:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
 end
 
-function Bullet:destroy()
-   for i, bullet in ipairs(ActiveBullets) do
-      if bullet == self then
-         table.remove(ActiveBullets, i)
+function SmallShot:destroy()
+   for i, SmallShot in ipairs(ActiveSmallShots) do
+      if SmallShot == self then
+         table.remove(ActiveSmallShots, i)
          self.physics.body:destroy()
          break
       end
    end
 end
 
-function Bullet:draw()
+function SmallShot:draw()
    love.graphics.draw(self.animation.draw, self.x, self.y, self.angle, 1, 1, self.width / 2, self.height / 2)
 end
 
-function Bullet.updateAll(dt)
-   for i, instance in ipairs(ActiveBullets) do
+function SmallShot.updateAll(dt)
+   for i, instance in ipairs(ActiveSmallShots) do
       instance:update(dt)
    end
 end
 
-function Bullet.drawAll()
-   for i, instance in ipairs(ActiveBullets) do
+function SmallShot.drawAll()
+   for i, instance in ipairs(ActiveSmallShots) do
       instance:draw()
    end
 end
 
-function Bullet.beginContact(a, b, collision)
-   for i, instance in ipairs(ActiveBullets) do
+function SmallShot.beginContact(a, b, collision)
+   for i, instance in ipairs(ActiveSmallShots) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
          instance:destroy()
          return true
@@ -128,4 +128,4 @@ function Bullet.beginContact(a, b, collision)
    end
 end
 
-return Bullet
+return SmallShot

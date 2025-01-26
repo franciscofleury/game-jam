@@ -1,7 +1,8 @@
 local Flyer = {}
 Flyer.__index = Flyer
 local Player = require("player")
-local Bullet = require("bullet") 
+local Bullet = require("bullet")
+local Bubble = require("bubble")
 local STI = require("sti")
 
 local ActiveFlyers = {}
@@ -175,6 +176,17 @@ function Flyer.beginContact(a, b, collision)
             if a == instance.physics.fixture or b == instance.physics.fixture then
                bullet:destroy()
                instance:takeDamage(1)
+               break
+            end
+         end
+      end
+   end
+
+   for i, bubble in ipairs(Bubble.ActiveBubbles) do
+      if a == bubble.physics.fixture or b == bubble.physics.fixture then
+         for i, instance in ipairs(ActiveFlyers) do
+            if a == instance.physics.fixture or b == instance.physics.fixture then
+               bubble:destroy()
                break
             end
          end

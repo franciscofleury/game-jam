@@ -6,13 +6,22 @@ Bubble.__index = Bubble
 local ActiveBubbles = {}
 local Bullet = require("bullet")
 
-function Bubble.new(x,y, bubbleSize)
+function Bubble.new(x,y, bubbleSize, direction)
    -- vida e velocidade da bolha variavel com tamanho da bolha
    local instance = setmetatable({}, Bubble)
    instance.x = x
    instance.y = y
+   if direction == "right" then
+      instance.x = x + 21
+   elseif direction == "left" then
+      instance.x = x - 15
+   elseif direction == "up" then
+      instance.y = y - 10
+   elseif direction == "down" then
+      instance.y = y + 40
+   end
    instance.life = 5 * bubbleSize
-   instance.state = "still" or "pop"
+   instance.state = "still"
    instance.size = Bubble[bubbleSize]
    instance.scale = 1
    if bubbleSize == 1 then instance.scale = 2 end
@@ -43,14 +52,22 @@ function Bubble.loadAssets()
    Bubble.stillAnim = {normal = {}, big = {}}
    for i=1,17 do
       Bubble.stillAnim.normal[i] = love.graphics.newImage("assets/bubble/normal/flicking/flicking"..i..".png")
-      --Bubble.stillAnim.big[i] = love.graphics.newImage("assets/bubble/big/flicking/flicking"..i..".png")
+      Bubble.stillAnim.big[i] = love.graphics.newImage("assets/bubble/big/flicking/flicking"..i..".png")
    end
 
    Bubble.popAnim = {normal = {}, big = {}}
-   for i=1,7 do
-      --Bubble.popAnim.normal[i] = love.graphics.newImage("assets/bubble/normal/pop/pop"..i..".png")
-      --Bubble.popAnim.big[i] = love.graphics.newImage("assets/bubble/big/pop/pop"..i..".png")
+   for i=1,4 do
+      Bubble.popAnim.normal[i] = love.graphics.newImage("assets/bubble/normal/pop/pop"..i..".png")
+      Bubble.popAnim.big[i] = love.graphics.newImage("assets/bubble/big/pop/exploding"..i..".png")
    end
+end
+
+function Bubble.removeAll()
+   for i,v in ipairs(ActiveBubbles) do
+      v.physics.body:destroy()
+   end
+
+   ActiveBubbles = {}
 end
 
 function Bubble:animate(dt)
@@ -66,26 +83,34 @@ function Bubble:setNewFrame()
    if anim.current < anim.total then
        anim.current = anim.current + 1
    else
-       anim.current = 1
+      if self.state == "pop" then
+         for i, bubble in ipairs(ActiveBubbles) do
+            if bubble == self then
+               table.remove(ActiveBubbles, i)
+            end
+         end
+      end
+      anim.current = 1
    end
    self.animation.draw = anim.img[anim.current]
 end
 
 function Bubble:destroy()
    for i, bubble in ipairs(ActiveBubbles) do
-      if bubble == self then
-		self.state = "pop"
-		table.remove(ActiveBubbles, i)
-        self.physics.body:destroy()
-    	break
+      if bubble == self and bubble.state ~= "pop" then
+         self.state = "pop"
+         self.physics.body:destroy()
+    	   break
       end
    end
 end
 
 function Bubble:update(dt)
    self:animate(dt)
-	self:syncPhysics()
-	self:applyUpwardForce()
+   if self.state ~= "pop" then
+	   self:syncPhysics()
+      self:applyUpwardForce()
+   end
    self.life = self.life - dt
    if self.life <= 0 then
       self:destroy()
@@ -101,7 +126,9 @@ function Bubble:syncPhysics()
 end
 
 function Bubble:draw()
-   love.graphics.draw(self.animation.draw, self.x, self.y, 0, 1/self.scale, 1/self.scale, self.width / 2, self.height / 2)
+   if self.animation.draw then
+      love.graphics.draw(self.animation.draw, self.x, self.y, 0, 1/self.scale, 1/self.scale, self.width / 2, self.height / 2)
+   end
 end
 
 function Bubble.updateAll(dt)
@@ -118,7 +145,7 @@ end
 
 function Bubble.beginContact(a, b, collision)
     for i, instance in ipairs(ActiveBubbles) do
-        if a == instance.physics.fixture or b == instance.physics.fixture then
+         if a == instance.physics.fixture or b == instance.physics.fixture then
             for _, bullet in ipairs(Bullet.ActiveBullets) do
                if a == bullet.physics.fixture or b == bullet.physics.fixture then
 
@@ -128,7 +155,7 @@ function Bubble.beginContact(a, b, collision)
                    local forceY = bubbleY - bulletY
 
                    if forceX > 0 then instance.x_vel = 20 else instance.x_vel = -20 end
-
+                   bullet:destroy()
                    return true
                end
            end

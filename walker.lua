@@ -1,7 +1,8 @@
 local Walker = {}
 Walker.__index = Walker
 local Player = require("player")
-local Bullet = require("bullet") 
+local Bullet = require("bullet")
+local Bubble = require("bubble")
 local STI = require("sti")
 
 local ActiveWalkers = {}
@@ -35,7 +36,7 @@ function Walker.new(x,y, x_speed)
    instance.animation.draw = instance.animation.walk.img[1]
 
    instance.physics = {}
-   instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "kinematic")
+   instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
@@ -82,7 +83,7 @@ end
 function Walker:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
    self:changeSide()
-   self.physics.body:setLinearVelocity(self.x_vel * self.side, 0)
+   self.physics.body:setLinearVelocity(self.x_vel * self.side, 100)
 end
 
 function Walker:changeAnimationConfigs(new_state, new_current)
@@ -168,6 +169,17 @@ function Walker.beginContact(a, b, collision)
             if a == instance.physics.fixture or b == instance.physics.fixture then
                bullet:destroy()
                instance:takeDamage(1)
+               break
+            end
+         end
+      end
+   end
+
+   for i, bubble in ipairs(Bubble.ActiveBubbles) do
+      if a == bubble.physics.fixture or b == bubble.physics.fixture then
+         for i, instance in ipairs(ActiveWalkers) do
+            if a == instance.physics.fixture or b == instance.physics.fixture then
+               bubble:destroy()
                break
             end
          end

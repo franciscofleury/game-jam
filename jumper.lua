@@ -1,7 +1,7 @@
 local Jumper = {}
 Jumper.__index = Jumper
 local Player = require("player")
-local Bullet = require("bullet") 
+local Bullet = require("bullet")
 local STI = require("sti")
 
 local ActiveJumpers = {}
@@ -14,30 +14,34 @@ function Jumper.removeAll()
    ActiveJumpers = {}
 end
 
-function Jumper.new(x,y, x_speed)
+function Jumper.new(x,y, cooldown, x_speed)
    local instance = setmetatable({}, Jumper)
    instance.x = x
    instance.y = y
 
    instance.state = "walk"
-   instance.hp = 2
+   instance.hp = 3
    if x_speed < 0 then
       instance.side = -1
    else
       instance.side = 1
    end
 
-   instance.x_vel = x_speed
+   instance.grounded = true
+   instance.x_vel = math.abs(x_speed)
 
-   instance.animation = {timer = 0, rate = 0.3}
+   instance.animation = {timer = 0, rate = 0.1}
    instance.animation.walk = {total = 8, current = 1, img = Jumper.walkAnim}
    instance.animation.die = {total = 12, current = 1, img = Jumper.dieAnim}
-   instance.animation.jump = {total = 9, current = 1, img = Jumper.jumpAnim}
+   instance.animation.jump = {total = 8, current = 1, img = Jumper.jumpAnim}
    instance.animation.air = {total = 2, current = 1, img = Jumper.airAnim}
    instance.animation.draw = instance.animation.walk.img[1]
 
+   instance.cooldown = cooldown
+   instance.cooldown_timer = cooldown - (instance.animation.rate * instance.animation.jump.total + 0.1)
+
    instance.physics = {}
-   instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "kinematic")
+   instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
@@ -57,7 +61,7 @@ function Jumper.loadAssets()
    end
 
     Jumper.jumpAnim = {}
-    for i=1,9 do
+    for i=1,8 do
         Jumper.jumpAnim[i] = love.graphics.newImage("assets/enemies/jumper/jumping/jumping"..i..".png")
     end
 
@@ -73,7 +77,9 @@ end
 
 function Jumper:update(dt)
    self:animate(dt)
-   if self.state == "walk" then
+   self:manageCooldown(dt)
+   self:applyGravity(dt)
+   if self.state == "walk" or self.state == "air" or self.state == "jump" then
       self:syncPhysics()
    end
 end
@@ -81,7 +87,7 @@ end
 function Jumper:changeSide()
    --confere se o walker bate em algum dos sensores do tiled
    for _, sensor in ipairs(Jumper.map.layers.sensors.objects) do
-      if sensor.type == "walker_sensor" then
+      if sensor.type == "jumper_sensor" then
          if self.x + self.width > sensor.x and self.x < sensor.x + sensor.width then
             if self.y + self.height > sensor.y and self.y < sensor.y + sensor.height then
                self.side = self.side * -1
@@ -92,9 +98,19 @@ function Jumper:changeSide()
 end
 
 function Jumper:syncPhysics()
-   self.x, self.y = self.physics.body:getPosition()
-   self:changeSide()
-   self.physics.body:setLinearVelocity(self.x_vel * self.side, 0)
+    self.x, self.y = self.physics.body:getPosition()
+    self:changeSide()
+    if self.state == "air" then
+        self.physics.body:setLinearVelocity(self.x_vel * self.side, 100)
+    else
+        self.physics.body:setLinearVelocity(0, 0)
+    end
+end
+
+function Jumper:applyGravity(dt)
+    if self.grounded == false then
+        self.y_vel = self.y_vel + self.gravity * dt
+    end
 end
 
 function Jumper:changeAnimationConfigs(new_state, new_current)
@@ -110,6 +126,25 @@ function Jumper:animate(dt)
    end
 end
 
+function Jumper:manageCooldown(dt)
+    if self.cooldown_timer >= self.cooldown - self.animation.rate * self.animation.jump.total then
+       if self.state == "walk" then
+            self:changeAnimationConfigs("jump", 1)
+       end
+    end
+    self.cooldown_timer = self.cooldown_timer + dt
+ end
+
+function Jumper:changeAnimationConfigs(new_state, new_current)
+    self.state = new_state
+    self.animation[new_state].current = new_current
+end
+
+function Jumper:jump()
+    self.y_vel = -500
+    grounded = false
+end
+
 function Jumper:setNewFrame()
     local anim = self.animation[self.state]
     if anim.current < anim.total then
@@ -117,6 +152,10 @@ function Jumper:setNewFrame()
     else
         if self.state == "die" then
             self:remove()
+        end
+        if self.state == "jump" then
+            self:jump()
+            self:changeAnimationConfigs("air", 1)
         end
     anim = self.animation[self.state]
     anim.current = 1
@@ -171,6 +210,24 @@ function Jumper.beginContact(a, b, collision)
             Player:takeDamage(1)
          end
       end
+        local nx, ny = collision:getNormal()
+        if a == instance.physics.fixture then
+            if ny > 0 then
+                grounded = true
+                instance.state = "walk"
+                instance.cooldown_timer = 0
+            elseif ny < 0 then
+                instance.y_vel = 0
+            end
+        elseif b == instance.physics.fixture then
+            if ny < 0 then
+                grounded = true
+                instance.state = "walk"
+                instance.cooldown_timer = 0
+            elseif ny > 0 then
+                instance.y_vel = 0
+            end
+        end
    end
 
    -- Check if collision involves Bullet and Jumper
@@ -185,6 +242,16 @@ function Jumper.beginContact(a, b, collision)
          end
       end
    end
+--    for i, bubble in ipairs(Bubble.ActiveBubbles) do
+--       if a == bubble.physics.fixture or b == bubble.physics.fixture then
+--          for i, instance in ipairs(ActiveJumpers) do
+--             if a == instance.physics.fixture or b == instance.physics.fixture then
+--                bubble:destroy()
+--                break
+--             end
+--          end
+--       end
+--    end
 end
 
 

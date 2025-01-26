@@ -43,12 +43,30 @@ function Spike.drawAll()
    end
 end
 
+function Spike.removeAll()
+   for i,v in ipairs(ActiveSpikes) do
+      v.physics.body:destroy()
+   end
+
+   ActiveSpikes = {}
+end
+
 function Spike.beginContact(a, b, collision)
    for i,instance in ipairs(ActiveSpikes) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
          if a == Player.physics.fixture or b == Player.physics.fixture then
             Player:takeDamage(instance.damage)
             return true
+         end
+      end
+   end
+   for i, bubble in ipairs(Bubble.ActiveBubbles) do
+      if a == bubble.physics.fixture or b == bubble.physics.fixture then
+         for i, instance in ipairs(ActiveSpikes) do
+            if a == instance.physics.fixture or b == instance.physics.fixture then
+               bubble:destroy()
+               break
+            end
          end
       end
    end

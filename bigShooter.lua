@@ -1,7 +1,8 @@
 local BigShooter = {}
 BigShooter.__index = BigShooter
 local Player = require("player")
-local Bullet = require("bullet") 
+local Bullet = require("bullet")
+local Bubble = require("bubble")
 
 local ActiveBigShooters = {}
 
@@ -33,7 +34,7 @@ function BigShooter.new(x,y, cooldown, shot_speed, side)
    instance.shot_speed = shot_speed --n foi implementado ainda
 
    instance.physics = {}
-   instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "static")
+   instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "dynamic")
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
@@ -64,6 +65,14 @@ end
 function BigShooter:update(dt)
    self:animate(dt)
    self:manageCooldown(dt)
+   if self.state == "still" or self.state == "shot" then
+      self:syncPhysics()
+   end
+end
+
+function BigShooter:syncPhysics()
+   self.x, self.y = self.physics.body:getPosition()
+   self.physics.body:setLinearVelocity(0, 100)
 end
 
 function BigShooter:manageCooldown(dt)
@@ -162,6 +171,17 @@ function BigShooter.beginContact(a, b, collision)
             if a == instance.physics.fixture or b == instance.physics.fixture then
                bullet:destroy()
                instance:takeDamage(1)
+               break
+            end
+         end
+      end
+   end
+
+   for i, bubble in ipairs(Bubble.ActiveBubbles) do
+      if a == bubble.physics.fixture or b == bubble.physics.fixture then
+         for i, instance in ipairs(ActiveBigShooters) do
+            if a == instance.physics.fixture or b == instance.physics.fixture then
+               bubble:destroy()
                break
             end
          end
