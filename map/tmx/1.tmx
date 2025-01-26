@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="34">
+<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="91">
  <editorsettings>
   <export target="../1.lua" format="lua"/>
  </editorsettings>
@@ -8,27 +8,27 @@
  </tileset>
  <layer id="1" name="ground" width="40" height="23">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,29,29,29,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,81,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,81,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,81,81,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,27,27,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,27,27,27,27,27,27,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,27,27,27,27,27,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,29,29,29,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,27,0,0,27,27,27,27,27,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,27,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,27,27,27,27,27,27,27,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,81,81,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,183,
+183,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,27,27,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,27,
 27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,77,77,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,
 81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81,81
 </data>
@@ -37,17 +37,12 @@
   <properties>
    <property name="collidable" type="bool" value="true"/>
   </properties>
-  <object id="6" x="1.33333" y="351.333" width="61.3333" height="16.6667">
+  <object id="19" x="1.875" y="335.875" width="636.625" height="15">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="19" x="2" y="340" width="638.5" height="15">
-   <properties>
-    <property name="collidable" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="22" x="31.4167" y="192.5" width="49.8333" height="15">
+  <object id="22" x="47.9167" y="192.25" width="47.8333" height="15">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
@@ -57,13 +52,105 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
+  <object id="35" x="112" y="160" width="79.75" height="15.5">
+   <properties>
+    <property name="collidable" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="36" x="224.25" y="112.25" width="96" height="16">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="37" x="208.5" y="256.125" width="111.5" height="15.75">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="38" x="448" y="224" width="15.875" height="15.625">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="39" x="496.125" y="208" width="16" height="15.875">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="40" x="544" y="208.125" width="79.125" height="16">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="50" x="160" y="272" width="16.5" height="16">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="51" x="111.5" y="288.5" width="17.5" height="15">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="54" x="304.091" y="240.318" width="16" height="15.5">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="76" x="0.969697" y="48" width="15.0303" height="287.333"/>
+  <object id="77" x="624.667" y="1.33333" width="13.3333" height="317.333">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="5" name="entity" tintcolor="#dc0ddc">
-  <object id="28" name="Spike" type="Spike" x="104" y="327"/>
-  <object id="29" name="Spike" type="spike" x="200" y="328"/>
-  <object id="30" name="Spike" type="spike" x="360" y="312"/>
-  <object id="31" x="417" y="481"/>
-  <object id="32" name="Fuel" type="fuel" x="411" y="263"/>
-  <object id="33" name="Fuel" type="fuel" x="151" y="326"/>
+  <object id="28" name="Spike" type="spike" x="64" y="320.25" width="15.75" height="15.25"/>
+  <object id="33" name="Fuel" type="fuel" x="48.5" y="224" width="15.5" height="15.5"/>
+  <object id="42" x="335.996" y="320.058" width="32" height="14.745">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="43" x="624" y="320" width="15.75" height="15.5625">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="44" name="Spike" type="spike" x="576.25" y="320.25" width="15.625" height="15.375"/>
+  <object id="45" name="Fuel" type="fuel" x="448" y="192" width="16" height="15.875"/>
+  <object id="47" name="Spike" type="spike" x="31.625" y="320.125" width="15.75" height="15.25"/>
+  <object id="48" name="Spike" type="spike" x="47.875" y="320.125" width="15.75" height="15.25"/>
+  <object id="53" name="Small Shooter" type="small_shooter" x="224" y="319.75" width="16" height="15.5"/>
+  <object id="55" name="Fuel" type="fuel" x="548.591" y="304.972" width="16" height="15.875"/>
+  <object id="56" name="Fuel" type="fuel" x="547.364" y="275.426" width="16" height="15.875"/>
+  <object id="57" name="Fuel" type="fuel" x="607.719" y="310.063" width="16" height="15.875"/>
+  <object id="58" name="Fuel" type="fuel" x="606" y="276.563" width="16" height="15.875"/>
+  <object id="59" name="Fuel" type="fuel" x="606.5" y="247.563" width="16" height="15.875"/>
+  <object id="60" name="Fuel" type="fuel" x="546.727" y="251.699" width="16" height="15.875"/>
+  <object id="61" name="Big Shooter" type="big_shooter" x="447.909" y="304" width="16" height="31.6364"/>
+  <object id="64" name="Walker" type="walker" x="256" y="255.162" width="8.54545" height="16.5"/>
+  <object id="66" name="Jumper" type="jumper" x="608.25" y="176.25" width="15.25" height="31.25"/>
+  <object id="68" name="Mill" type="mill" x="607" y="16" width="16.5" height="47"/>
+  <object id="71" name="Flyer" type="flyer" x="384" y="48.6667" width="17.3333" height="31.3333">
+   <properties>
+    <property name="x_vel" type="int" value="30"/>
+    <property name="y_vel" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="72" name="Flyer" type="flyer" x="468.667" y="79.3333" width="15.3333" height="30.6667">
+   <properties>
+    <property name="x_vel" type="int" value="0"/>
+    <property name="y_vel" type="int" value="30"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="sensors" visible="0">
+  <object id="78" name="Walker Sensor" type="walker_sensor" x="206.375" y="248.443" width="1.5625" height="2.4375"/>
+  <object id="80" name="Walker Sensor" type="walker_sensor" x="304.125" y="249.466" width="1.125" height="2.1875"/>
+  <object id="85" name="Flyer Sensor" type="flyer_sensor" x="468.667" y="12.6667" width="3.33333" height="5.33333"/>
+  <object id="86" name="Flyer Sensor" type="flyer_sensor" x="467.333" y="153.333" width="4.66667" height="4"/>
+  <object id="89" name="Flyer Sensor" type="flyer_sensor" x="412.667" y="42.6667" width="3.33333" height="10"/>
+  <object id="90" name="Flyer Sensor" type="flyer_sensor" x="198.667" y="40" width="4.66667" height="12"/>
  </objectgroup>
 </map>

@@ -1,96 +1,103 @@
-local Walker = {}
-Walker.__index = Walker
+local Flyer = {}
+Flyer.__index = Flyer
 local Player = require("player")
 local Bullet = require("bullet") 
 local STI = require("sti")
 
-local ActiveWalkers = {}
+local ActiveFlyers = {}
 
-function Walker.removeAll()
-   for i,v in ipairs(ActiveWalkers) do
+function Flyer.removeAll()
+   for i,v in ipairs(ActiveFlyers) do
       v.physics.body:destroy()
    end
 
-   ActiveWalkers = {}
+   ActiveFlyers = {}
 end
 
-function Walker.new(x,y, x_speed)
-   local instance = setmetatable({}, Walker)
+function Flyer.new(x,y, x_speed, y_speed)
+   local instance = setmetatable({}, Flyer)
    instance.x = x
    instance.y = y
 
-   instance.state = "walk"
+   instance.state = "fly"
    instance.hp = 2
-   if x_speed < 0 then
-      instance.side = -1
-   else
-      instance.side = 1
-   end
 
-   instance.x_vel = x_speed
+    if x_speed < 0 then
+        instance.side = -1
+    else
+        instance.side = 1
+    end
+    instance.x_vel = x_speed
+
+    if y_speed < 0 then
+        instance.y_side = -1
+    else
+        instance.y_side = 1
+    end
+    instance.y_vel = y_speed
 
    instance.animation = {timer = 0, rate = 0.3}
-   instance.animation.walk = {total = 6, current = 1, img = Walker.walkAnim}
-   instance.animation.die = {total = 11, current = 1, img = Walker.dieAnim}
-   instance.animation.draw = instance.animation.walk.img[1]
+   instance.animation.fly = {total = 8, current = 1, img = Flyer.flyAnim}
+   instance.animation.die = {total = 12, current = 1, img = Flyer.dieAnim}
+   instance.animation.draw = instance.animation.fly.img[1]
 
    instance.physics = {}
    instance.physics.body = love.physics.newBody(World, instance.x, instance.y, "kinematic")
    instance.physics.body:setFixedRotation(true)
    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
-   instance.physics.body:setMass(25)
-   table.insert(ActiveWalkers, instance)
+   table.insert(ActiveFlyers, instance)
 end
 
-function Walker.loadAssets()
-   Walker.walkAnim = {}
-   for i=1,6 do
-      Walker.walkAnim[i] = love.graphics.newImage("assets/enemies/walker/walking/walking"..i..".png")
+function Flyer.loadAssets()
+   Flyer.flyAnim = {}
+   for i=1,8 do
+      Flyer.flyAnim[i] = love.graphics.newImage("assets/enemies/flyer/standard/standard"..i..".png")
    end
 
-   Walker.dieAnim = {}
-   for i=1,11 do
-      Walker.dieAnim[i] = love.graphics.newImage("assets/enemies/walker/dying/dying"..i..".png")
+   Flyer.dieAnim = {}
+   for i=1,12 do
+      Flyer.dieAnim[i] = love.graphics.newImage("assets/enemies/flyer/dying/dying"..i..".png")
    end
 
-   Walker.width = Walker.walkAnim[1]:getWidth()
-   Walker.height = Walker.walkAnim[1]:getHeight()
-   Walker.map = STI("map/1.lua", {"box2d"})
+   Flyer.width = Flyer.flyAnim[1]:getWidth()
+   Flyer.height = Flyer.flyAnim[1]:getHeight()
+   Flyer.map = STI("map/1.lua", {"box2d"})
 end
 
-function Walker:update(dt)
+function Flyer:update(dt)
    self:animate(dt)
-   if self.state == "walk" then
+   if self.state == "fly" then
       self:syncPhysics()
    end
 end
 
-function Walker:changeSide()
-   --confere se o walker bate em algum dos sensores do tiled
-   for _, sensor in ipairs(Walker.map.layers.sensors.objects) do
-      if sensor.type == "walker_sensor" then
+function Flyer:changeSide()
+   --confere se o Flyer bate em algum dos sensores do tiled
+   for _, sensor in ipairs(Flyer.map.layers.sensors.objects) do
+      if sensor.type == "flyer_sensor" then
          if self.x + self.width > sensor.x and self.x < sensor.x + sensor.width then
             if self.y + self.height > sensor.y and self.y < sensor.y + sensor.height then
-               self.side = self.side * -1
+                self.side = self.side * -1
+                self.y_side = self.y_side * -1
             end
          end
       end
    end
 end
 
-function Walker:syncPhysics()
+function Flyer:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
    self:changeSide()
-   self.physics.body:setLinearVelocity(self.x_vel * self.side, 0)
+   self.physics.body:setLinearVelocity(self.x_vel * self.side, self.y_vel * self.y_side)
 end
 
-function Walker:changeAnimationConfigs(new_state, new_current)
+function Flyer:changeAnimationConfigs(new_state, new_current)
    self.state = new_state
    self.animation[new_state].current = new_current
 end
 
-function Walker:animate(dt)
+function Flyer:animate(dt)
    self.animation.timer = self.animation.timer + dt
    if self.animation.timer > self.animation.rate then
       self.animation.timer = 0
@@ -98,7 +105,7 @@ function Walker:animate(dt)
    end
 end
 
-function Walker:setNewFrame()
+function Flyer:setNewFrame()
     local anim = self.animation[self.state]
     if anim.current < anim.total then
         anim.current = anim.current + 1
@@ -112,59 +119,59 @@ function Walker:setNewFrame()
     self.animation.draw = anim.img[anim.current]
 end
 
-function Walker:remove()
-    for i, instance in ipairs(ActiveWalkers) do
+function Flyer:remove()
+    for i, instance in ipairs(ActiveFlyers) do
         if instance == self then
-            table.remove(ActiveWalkers, i)
+            table.remove(ActiveFlyers, i)
         end
     end
 end
 
-function Walker:draw()
+function Flyer:draw()
    love.graphics.draw(self.animation.draw, self.x, self.y, 0, self.side, 1, self.width / 2, self.height / 2)
 end
 
-function Walker.updateAll(dt)
-    for i,instance in ipairs(ActiveWalkers) do
+function Flyer.updateAll(dt)
+    for i,instance in ipairs(ActiveFlyers) do
         instance:update(dt)
     end
 end
 
-function Walker.drawAll()
-   for i,instance in ipairs(ActiveWalkers) do
+function Flyer.drawAll()
+   for i,instance in ipairs(ActiveFlyers) do
       instance:draw()
    end
 end
 
-function Walker:takeDamage()
+function Flyer:takeDamage()
    self.hp = self.hp - 1
    if self.hp == 0 then
       self:die()
    end
 end
 
-function Walker:die()
+function Flyer:die()
    self.state = "die"
    self.animation.rate = 0.05
    self.physics.body:destroy()
 end
 
 
-function Walker.beginContact(a, b, collision)
-   -- Check if collision involves Walker
-   for i, instance in ipairs(ActiveWalkers) do
+function Flyer.beginContact(a, b, collision)
+   -- Check if collision involves Flyer
+   for i, instance in ipairs(ActiveFlyers) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
          if a == Player.physics.fixture or b == Player.physics.fixture then
-            -- Player collided with Walker
+            -- Player collided with Flyer
             Player:takeDamage(1)
          end
       end
    end
 
-   -- Check if collision involves Bullet and Walker
+   -- Check if collision involves Bullet and Flyer
    for i, bullet in ipairs(Bullet.ActiveBullets) do
       if a == bullet.physics.fixture or b == bullet.physics.fixture then
-         for i, instance in ipairs(ActiveWalkers) do
+         for i, instance in ipairs(ActiveFlyers) do
             if a == instance.physics.fixture or b == instance.physics.fixture then
                bullet:destroy()
                instance:takeDamage(1)
@@ -176,4 +183,4 @@ function Walker.beginContact(a, b, collision)
 end
 
 
-return Walker
+return Flyer

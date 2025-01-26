@@ -10,14 +10,23 @@ function GUI:load()
     self.fuel.container = love.graphics.newImage("assets/gui/fuel_container.png")
     self.fuel.container_full = love.graphics.newImage("assets/gui/fuel_container_full.png")
     self.fuel.fuel_bar = love.graphics.newImage("assets/gui/fuel_bar.png")
-    self.fuel.quad_fuel_bar = love.graphics.newQuad(62, 0, 293 * Player.fuel/Player.max_fuel, 67, 372, 67)
+    self.fuel.init_width = 293 * Player.fuel/Player.max_fuel
+    self.fuel.current_width = self.fuel.init_width
+    self.fuel.quad_fuel_bar = love.graphics.newQuad(62, 0, self.fuel.current_width, 67, 372, 67)
     self.fuel.width = self.fuel.container:getWidth()
     self.fuel.height = self.fuel.container:getHeight()
 
 end
 
+function lerp(a, b, t)
+    return a + (b - a) * t
+end
+
+
 function GUI:update(dt)
-    self.fuel.quad_fuel_bar:setViewport(62, 0, 293 * Player.fuel/Player.max_fuel, 67, 372, 67)
+    local target_width = 293 * Player.fuel / Player.max_fuel
+    self.fuel.current_width = lerp(self.fuel.current_width, target_width, dt * 5)
+    self.fuel.quad_fuel_bar:setViewport(62, 0, self.fuel.current_width, 67, 372, 67)
 end
 
 function GUI:draw() 

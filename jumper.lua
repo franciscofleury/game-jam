@@ -1,21 +1,21 @@
-local Walker = {}
-Walker.__index = Walker
+local Jumper = {}
+Jumper.__index = Jumper
 local Player = require("player")
 local Bullet = require("bullet") 
 local STI = require("sti")
 
-local ActiveWalkers = {}
+local ActiveJumpers = {}
 
-function Walker.removeAll()
-   for i,v in ipairs(ActiveWalkers) do
+function Jumper.removeAll()
+   for i,v in ipairs(ActiveJumpers) do
       v.physics.body:destroy()
    end
 
-   ActiveWalkers = {}
+   ActiveJumpers = {}
 end
 
-function Walker.new(x,y, x_speed)
-   local instance = setmetatable({}, Walker)
+function Jumper.new(x,y, x_speed)
+   local instance = setmetatable({}, Jumper)
    instance.x = x
    instance.y = y
 
@@ -30,8 +30,10 @@ function Walker.new(x,y, x_speed)
    instance.x_vel = x_speed
 
    instance.animation = {timer = 0, rate = 0.3}
-   instance.animation.walk = {total = 6, current = 1, img = Walker.walkAnim}
-   instance.animation.die = {total = 11, current = 1, img = Walker.dieAnim}
+   instance.animation.walk = {total = 8, current = 1, img = Jumper.walkAnim}
+   instance.animation.die = {total = 12, current = 1, img = Jumper.dieAnim}
+   instance.animation.jump = {total = 9, current = 1, img = Jumper.jumpAnim}
+   instance.animation.air = {total = 2, current = 1, img = Jumper.airAnim}
    instance.animation.draw = instance.animation.walk.img[1]
 
    instance.physics = {}
@@ -40,35 +42,45 @@ function Walker.new(x,y, x_speed)
    instance.physics.shape = love.physics.newRectangleShape(instance.width, instance.height)
    instance.physics.fixture = love.physics.newFixture(instance.physics.body, instance.physics.shape)
    instance.physics.body:setMass(25)
-   table.insert(ActiveWalkers, instance)
+   table.insert(ActiveJumpers, instance)
 end
 
-function Walker.loadAssets()
-   Walker.walkAnim = {}
-   for i=1,6 do
-      Walker.walkAnim[i] = love.graphics.newImage("assets/enemies/walker/walking/walking"..i..".png")
+function Jumper.loadAssets()
+   Jumper.walkAnim = {}
+   for i=1,8 do
+      Jumper.walkAnim[i] = love.graphics.newImage("assets/enemies/jumper/standard/standard"..i..".png")
    end
 
-   Walker.dieAnim = {}
-   for i=1,11 do
-      Walker.dieAnim[i] = love.graphics.newImage("assets/enemies/walker/dying/dying"..i..".png")
+   Jumper.dieAnim = {}
+   for i=1,12 do
+      Jumper.dieAnim[i] = love.graphics.newImage("assets/enemies/jumper/dying/dying"..i..".png")
    end
 
-   Walker.width = Walker.walkAnim[1]:getWidth()
-   Walker.height = Walker.walkAnim[1]:getHeight()
-   Walker.map = STI("map/1.lua", {"box2d"})
+    Jumper.jumpAnim = {}
+    for i=1,9 do
+        Jumper.jumpAnim[i] = love.graphics.newImage("assets/enemies/jumper/jumping/jumping"..i..".png")
+    end
+
+    Jumper.airAnim = {}
+    for i=1,2 do
+        Jumper.airAnim[i] = love.graphics.newImage("assets/enemies/jumper/air/air"..i..".png")
+    end
+
+   Jumper.width = Jumper.walkAnim[1]:getWidth()
+   Jumper.height = Jumper.walkAnim[1]:getHeight()
+   Jumper.map = STI("map/1.lua", {"box2d"})
 end
 
-function Walker:update(dt)
+function Jumper:update(dt)
    self:animate(dt)
    if self.state == "walk" then
       self:syncPhysics()
    end
 end
 
-function Walker:changeSide()
+function Jumper:changeSide()
    --confere se o walker bate em algum dos sensores do tiled
-   for _, sensor in ipairs(Walker.map.layers.sensors.objects) do
+   for _, sensor in ipairs(Jumper.map.layers.sensors.objects) do
       if sensor.type == "walker_sensor" then
          if self.x + self.width > sensor.x and self.x < sensor.x + sensor.width then
             if self.y + self.height > sensor.y and self.y < sensor.y + sensor.height then
@@ -79,18 +91,18 @@ function Walker:changeSide()
    end
 end
 
-function Walker:syncPhysics()
+function Jumper:syncPhysics()
    self.x, self.y = self.physics.body:getPosition()
    self:changeSide()
    self.physics.body:setLinearVelocity(self.x_vel * self.side, 0)
 end
 
-function Walker:changeAnimationConfigs(new_state, new_current)
+function Jumper:changeAnimationConfigs(new_state, new_current)
    self.state = new_state
    self.animation[new_state].current = new_current
 end
 
-function Walker:animate(dt)
+function Jumper:animate(dt)
    self.animation.timer = self.animation.timer + dt
    if self.animation.timer > self.animation.rate then
       self.animation.timer = 0
@@ -98,7 +110,7 @@ function Walker:animate(dt)
    end
 end
 
-function Walker:setNewFrame()
+function Jumper:setNewFrame()
     local anim = self.animation[self.state]
     if anim.current < anim.total then
         anim.current = anim.current + 1
@@ -112,59 +124,59 @@ function Walker:setNewFrame()
     self.animation.draw = anim.img[anim.current]
 end
 
-function Walker:remove()
-    for i, instance in ipairs(ActiveWalkers) do
+function Jumper:remove()
+    for i, instance in ipairs(ActiveJumpers) do
         if instance == self then
-            table.remove(ActiveWalkers, i)
+            table.remove(ActiveJumpers, i)
         end
     end
 end
 
-function Walker:draw()
+function Jumper:draw()
    love.graphics.draw(self.animation.draw, self.x, self.y, 0, self.side, 1, self.width / 2, self.height / 2)
 end
 
-function Walker.updateAll(dt)
-    for i,instance in ipairs(ActiveWalkers) do
+function Jumper.updateAll(dt)
+    for i,instance in ipairs(ActiveJumpers) do
         instance:update(dt)
     end
 end
 
-function Walker.drawAll()
-   for i,instance in ipairs(ActiveWalkers) do
+function Jumper.drawAll()
+   for i,instance in ipairs(ActiveJumpers) do
       instance:draw()
    end
 end
 
-function Walker:takeDamage()
+function Jumper:takeDamage()
    self.hp = self.hp - 1
    if self.hp == 0 then
       self:die()
    end
 end
 
-function Walker:die()
+function Jumper:die()
    self.state = "die"
    self.animation.rate = 0.05
    self.physics.body:destroy()
 end
 
 
-function Walker.beginContact(a, b, collision)
-   -- Check if collision involves Walker
-   for i, instance in ipairs(ActiveWalkers) do
+function Jumper.beginContact(a, b, collision)
+   -- Check if collision involves Jumper
+   for i, instance in ipairs(ActiveJumpers) do
       if a == instance.physics.fixture or b == instance.physics.fixture then
          if a == Player.physics.fixture or b == Player.physics.fixture then
-            -- Player collided with Walker
+            -- Player collided with Jumper
             Player:takeDamage(1)
          end
       end
    end
 
-   -- Check if collision involves Bullet and Walker
+   -- Check if collision involves Bullet and Jumper
    for i, bullet in ipairs(Bullet.ActiveBullets) do
       if a == bullet.physics.fixture or b == bullet.physics.fixture then
-         for i, instance in ipairs(ActiveWalkers) do
+         for i, instance in ipairs(ActiveJumpers) do
             if a == instance.physics.fixture or b == instance.physics.fixture then
                bullet:destroy()
                instance:takeDamage(1)
@@ -176,4 +188,4 @@ function Walker.beginContact(a, b, collision)
 end
 
 
-return Walker
+return Jumper

@@ -194,8 +194,8 @@ end
 function Player:setNewFrameShield()
     local anim = self.animationShield[self.shieldState]
     self.animationShield.draw = anim.img[anim.current]
-    print(self.shieldState)
-    print(anim.current)
+    -- print(self.shieldState)
+    -- print(anim.current)
     if anim.current < anim.total then
         anim.current = anim.current + 1
     else
